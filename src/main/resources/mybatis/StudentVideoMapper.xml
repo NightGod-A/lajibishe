@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.StudentVideoMapper">
+
+    <select id="queryStudentVideoList" resultType="StudentVideo">
+        select * FROM T_studentVideo order by id
+    </select>
+
+    <select id="queryStudentVideoList_COUNT" resultType="Long">
+        select count(*) FROM T_studentVideo
+    </select>
+
+    <select id="queryStudentVideoById" resultType="StudentVideo">
+        select * from T_studentVideo where id = #{id}
+    </select>
+
+    <select id="queryStudentVideoByStudentAndClass" resultType="StudentVideo">
+        select * from T_studentVideo where studentId = #{student} and classId = #{classId}
+    </select>
+
+    <select id="queryStudentVideoByVideo" resultType="StudentVideo">
+        select * from T_studentVideo where videoId = #{videoId}
+    </select>
+
+    <select id="queryStudentVideoByStudentAndClassAndVideo" resultType="StudentVideo">
+        select * from T_studentVideo where studentId = #{student} and classId = #{classId} and videoId = #{videoId}
+    </select>
+
+
+    <insert id="addStudentVideo" parameterType="StudentVideo">
+        insert into T_studentVideo (videoId,studentId,classId,status) values (#{videoId},#{studentId},#{classId},#{status})
+    </insert>
+
+    <update id="updateStudentVideo" parameterType="StudentVideo">
+        update T_studentVideo
+        <set>
+            <if test="videoId != null">videoId=#{videoId},</if>
+            <if test="studentId != null">studentId=#{studentId},</if>
+            <if test="classId != null">classId=#{classId},</if>
+            <if test="status != null">status=#{status},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+    <delete id="deleteStudentVideo" parameterType="int">
+        delete from T_studentVideo where id=#{id}
+    </delete>
+
+    <delete id="deleteStudentVideoByClassAndVideo" parameterType="int">
+        delete from T_studentVideo where classId=#{classId} and videoId = #{videoId}
+    </delete>
+
+</mapper>

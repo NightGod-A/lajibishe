@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://localhost:1433;databasename=ujnStudyWeb
+    username: sa
+    password: li888888
+
+  servlet:
+    multipart:
+      max-file-size: -1        # 设置单个文件最大大小为1024MB
+      max-request-size: -1    # 设置多个文件大小为10240MB
+
+mybatis:
+  type-aliases-package: com.ujn.studyweb.pojo
+  mapper-locations: classpath:mybatis/*.xml

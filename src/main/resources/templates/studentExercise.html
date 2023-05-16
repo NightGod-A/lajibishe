@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>学生管理页面</title>
+    <link th:href="@{css/output.css}" rel="stylesheet" type="text/css">
+</head>
+
+<body class="bg-gray-200">
+<input type="hidden" th:value="${classId}" id="classId">
+<input type="hidden" th:value="${exerciseId}" id="exerciseId">
+<header class="bg-white shadow-sm">
+    <div class="container mx-auto py-4 px-6 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-800">学生管理页面</h1>
+
+    </div>
+</header>
+<main class="container mx-auto mt-8 px-4">
+
+    <section class="mt-8">
+        <h2 class="text-xl font-bold mb-4">已完成</h2>
+        <table class="w-full bg-white shadow-md divide-y divide-gray-300">
+            <thead>
+            <tr>
+                <th class="py-3 px-4 text-left">学生ID</th>
+                <th class="py-3 px-4 text-left">学生姓名</th>
+                <th class="py-3 px-4 text-left">学生电话</th>
+                <th class="py-3 px-4 text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="bg-white hover:bg-gray-100" th:each="user:${did}">
+                <td class="py-3 px-4" th:text="${user.getId()}"></td>
+                <td class="py-3 px-4" th:text="${user.getName()}"></td>
+                <td class="py-3 px-4" th:text="${user.getPhone()}"></td>
+                <td class="py-3 px-4 text-center">
+                    <button th:data-user="${user.getId()}"  th:onclick="jumpToExerciseResult(this.getAttribute('data-user'))"
+                            class="bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none mr-2">
+                        习题信息
+                    </button>
+
+                </td>
+            </tr>
+            <!-- 可以根据学生信息列表动态生成更多表格行 -->
+            </tbody>
+        </table>
+    </section>
+
+    <section class="mt-8">
+        <h2 class="text-xl font-bold mb-4">未完成</h2>
+        <table class="w-full bg-white shadow-md divide-y divide-gray-300">
+            <thead>
+            <tr>
+                <th class="py-3 px-4 text-left">学生ID</th>
+                <th class="py-3 px-4 text-left">学生姓名</th>
+                <th class="py-3 px-4 text-left">学生电话</th>
+                <th class="py-3 px-4 text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="bg-white hover:bg-gray-100" th:each="user:${notDid}">
+                <td class="py-3 px-4" th:text="${user.getId()}"></td>
+                <td class="py-3 px-4" th:text="${user.getName()}"></td>
+                <td class="py-3 px-4" th:text="${user.getPhone()}"></td>
+                <td class="py-3 px-4 text-center">
+
+                </td>
+            </tr>
+            <!-- 可以根据学生信息列表动态生成更多表格行 -->
+            </tbody>
+        </table>
+    </section>
+
+
+</main>
+
+<script  type="text/javascript">
+
+    var exerciseId = document.getElementById('exerciseId').value;
+    var classId = document.getElementById('classId').value;
+    function jumpToExerciseResult(userId){
+        window.location.href ="/viewExerciseResult?user="+userId+"&exercise="+exerciseId+"&classId="+classId;
+    }
+
+</script>
+</body>
+</html>

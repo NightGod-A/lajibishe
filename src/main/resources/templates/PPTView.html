@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>播放 PPT</title>
+    <!-- 导入 Tailwind CSS 样式表 -->
+    <link th:href="@{css/output.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{css/swiper-bundle.min.css}" rel="stylesheet" type="text/css">
+    <!-- 导入 Swiper 样式表 -->
+<!--    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />-->
+</head>
+
+<body class="bg-gray-100">
+<div class="flex items-center justify-center h-screen">
+    <div class="max-w-3xl bg-white rounded-md shadow-md p-8">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">在线播放 PPT</h2>
+        <div id="pptContainer" class="swiper-container w-full h-96">
+            <div class="swiper-wrapper">
+                <!-- 在此处插入 PPT 的 DOM 元素，作为 swiper-slide -->
+                <div class="swiper-slide" th:each="i : ${#numbers.sequence(1, ppt.getPageNum())}">
+                    <img th:src="@{/showPPT(fileName=${ppt.getId()}+'Slide'+${i}+'.jpg')}"  alt="PPT Slide 1" class="w-full h-full object-cover">
+                </div>
+
+                <!-- 更多的 PPT Slide 可以继续添加 -->
+            </div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+            <!-- Add Navigation -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+    // JavaScript 代码
+    var swiper = new Swiper('#pptContainer', {
+        slidesPerView: 1,
+        spaceBetween: 10,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+    });
+</script>
+</body>
+
+</html>

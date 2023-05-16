@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link th:href="@{css/output.css}" rel="stylesheet" type="text/css">
+</head>
+<body class="flex flex-col min-h-screen">
+<!-- Header -->
+<header class="bg-blue-500 py-4">
+  <div class="container mx-auto flex justify-between items-center px-4">
+    <a href="#" class="text-white text-xl font-bold">网上学习系统</a>
+    <nav>
+      <ul class="flex">
+        <li><a href="/login" class="text-white py-2 px-4">登录</a></li>
+
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- Registration Form -->
+<section class="flex-grow bg-gray-100 py-20">
+  <div class="container mx-auto max-w-md px-4">
+    <div class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
+      <h1 class="text-2xl font-bold mb-4">注册一个新账户</h1>
+      <form id="submitForm" action="/registerAccount" method="post">
+        <div class="mb-4">
+          <label for="name" class="block text-gray-700 font-bold mb-2">姓名</label>
+          <input type="text" id="name" name="name" class="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none focus:border-blue-500" required>
+        </div>
+        <div class="mb-4">
+          <p  style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+          <label for="phone" class="block text-gray-700 font-bold mb-2">手机号</label>
+          <input type="tel" id="phone" name="phone" class="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none focus:border-blue-500" required>
+        </div>
+        <div class="mb-4">
+          <label for="password" class="block text-gray-700 font-bold mb-2">密码</label>
+          <input type="password" id="password" name="password" class="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none focus:border-blue-500" required>
+        </div>
+        <div class="mb-6">
+          <label class="block text-gray-700 font-bold mb-2">身份</label>
+          <label class="inline-flex items-center">
+            <input type="radio" class="form-radio" name="user_type" value="student" checked>
+            <span class="ml-2">学生</span>
+          </label>
+          <label class="inline-flex items-center ml-6">
+            <input type="radio" class="form-radio" name="user_type" value="teacher" >
+            <span class="ml-2">老师</span>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <button type="submit"
+                  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Register</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-blue-500 py-4 mt-auto">
+  <div class="container mx-auto text-white text-center">
+    <p>&copy;2023 泽宇的毕业设计</p>
+  </div>
+</footer>
+</body>
+</html>

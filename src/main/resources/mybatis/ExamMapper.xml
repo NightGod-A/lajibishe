@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.ExamMapper">
+
+    <select id="queryExamList" resultType="Exam">
+        select * FROM T_exam order by id
+    </select>
+
+    <select id="queryExamList_COUNT" resultType="Long">
+        select count(*) FROM T_exam
+    </select>
+
+    <select id="queryExamById" resultType="Exam">
+        select * from T_exam where id = #{id}
+    </select>
+
+    <select id="queryExamByTeacher" resultType="Exam">
+        select * from T_exam where teacherId = #{teacher}
+    </select>
+
+    <select id="queryExamByCourse" resultType="Exam">
+        select * from T_exam where courseId = #{course}
+    </select>
+
+    <insert id="addExam" parameterType="Exam" useGeneratedKeys="true" keyProperty="id">
+        insert into T_exam (courseId,name,teacherId,creatTime,startTime,endTime,minute) values (#{courseId},#{name},#{teacherId},#{creatTime},#{startTime},#{endTime},#{minute})
+    </insert>
+
+    <update id="updateExam" parameterType="Exam">
+        update T_exam
+        <set>
+            <if test="courseId != null">courseId=#{courseId},</if>
+            <if test="teacherId != null">teacherId=#{teacherId},</if>
+            <if test="name != null">name=#{name},</if>
+            <if test="startTime != null">startTime=#{startTime},</if>
+            <if test="endTime != null">endTime=#{endTime},</if>
+            <if test="minute != null">minute=#{minute},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+    <delete id="deleteExam" parameterType="int">
+        delete from T_exam where id=#{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link th:href="@{css/output.css}" rel="stylesheet" type="text/css">
+</head>
+<body class=" bg-gray-100">
+<input type="hidden" id="twenty" th:value="${twenty}">
+<input type="hidden" id="forty" th:value="${forty}">
+<input type="hidden" id="sixty" th:value="${sixty}">
+<input type="hidden" id="eighty" th:value="${eighty}">
+<input type="hidden" id="hundred" th:value="${hundred}">
+<input type="hidden" id="sizeAll" th:value="${size}">
+<div class="flex flex-col items-center justify-center h-screen">
+    <h1 class="text-3xl font-bold mb-8" th:text="${user.getName()}"></h1>
+    <div class="flex flex-col md:flex-row w-full p-8 ml-24">
+        <!-- 进度条部分 -->
+        <div class="w-full md:w-3/4">
+            <div class="mb-8">
+                <h2 class="text-xl font-bold mb-2">学习进度</h2>
+                <div class="relative w-full h-6 rounded-full bg-gray-300">
+                    <div class="absolute top-0 left-0 h-full rounded-full bg-green-500" th:style="'width:'+${progress*100}+'%;'"></div>
+                </div>
+            </div>
+            <div class="mb-8">
+                <h2 class="text-xl font-bold mb-2">视频进度</h2>
+                <div class="relative w-full h-6 rounded-full bg-gray-300">
+                    <div class="absolute top-0 left-0 h-full rounded-full bg-blue-500" th:style="'width:'+${videoProgress*100}+'%;'"></div>
+                </div>
+            </div>
+            <div class="mb-8">
+                <h2 class="text-xl font-bold mb-2">习题进度</h2>
+                <div class="relative w-full h-6 rounded-full bg-gray-300">
+                    <div class="absolute top-0 left-0 h-full rounded-full bg-yellow-500" th:style="'width:'+${exerciseProgress*100}+'%;'"></div>
+                </div>
+            </div>
+            <div class="mb-8">
+                <h2 class="text-xl font-bold mb-2">考试进度</h2>
+                <div class="relative w-full h-6 rounded-full bg-gray-300">
+                    <div class="absolute top-0 left-0 h-full rounded-full bg-red-500" th:style="'width:'+${examProgress*100}+'%;'"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="overflow-hidden rounded-lg shadow-lg">
+    <div
+            class="bg-neutral-50 py-3 px-5 dark:bg-neutral-700 dark:text-neutral-200">
+        所有学生进度
+    </div>
+    <canvas class="p-10" id="chartBar"></canvas>
+</div>
+
+<!-- Required chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Chart bar -->
+<script>
+    const labelsBarChart = [
+        "0-20%",
+        "20-40%",
+        "40-60%",
+        "60-80%",
+        "80-100%",
+
+    ];
+    var twenty = document.getElementById("twenty").value;
+    var forty = document.getElementById("forty").value;
+    var sixty = document.getElementById("sixty").value;
+    var eighty = document.getElementById("eighty").value;
+    var hundred = document.getElementById("hundred").value;
+    var sizeAll = document.getElementById("sizeAll").value;
+
+    const dataBarChart = {
+        labels: labelsBarChart,
+        datasets: [
+            {
+                label: "学生人数",
+                backgroundColor: "hsl(217, 57%, 51%)",
+                borderColor: "hsl(217, 57%, 51%)",
+                data: [twenty, forty, sixty, eighty, hundred, sizeAll],
+            },
+        ],
+    };
+
+    const configBarChart = {
+        type: "bar",
+        data: dataBarChart,
+        options: {},
+    };
+
+    var chartBar = new Chart(
+        document.getElementById("chartBar"),
+        configBarChart
+    );
+</script>
+
+
+</body>
+</html>

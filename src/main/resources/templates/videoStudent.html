@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link th:href="@{css/output.css}" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+<input type="hidden" id="classId" th:value="${classId}">
+<input type="hidden" id="videoStatus" th:value="${studentVideo.getStatus()}">
+<input type="hidden" id="videoId" th:value="${video.getId()}">
+<input type="hidden" id="userId" th:value="${studentVideo.getStudentId()}">
+<div class="container mx-auto px-4 py-8">
+  <div class="bg-white rounded shadow overflow-hidden">
+    <!-- 视频区域 -->
+    <div class="relative">
+      <div class="aspect-ratio-16/9">
+        <video id="studentVideo" class="w-full h-full object-cover" th:src="@{/showVideo(fileName=${video.getVideo()})}" controls="controls"></video>
+      </div>
+    </div>
+
+    <!-- 视频介绍区域 -->
+    <div class="px-4 py-2">
+      <h2 class="text-lg font-medium mb-2" th:text="${video.getName()}"></h2>
+      <p class="text-gray-700 leading-relaxed">这是一个视频的介绍文字。这是一个视频的介绍文字。这是一个视频的介绍文字。这是一个视频的介绍文字。这是一个视频的介绍文字。这是一个视频的介绍文字。</p>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  var video = document.getElementById("studentVideo");
+  const classId = document.getElementById("classId").value;
+  const videoStatus = document.getElementById("videoStatus").value;
+  const userId = document.getElementById("userId").value;
+  const videoId = document.getElementById("videoId").value;
+
+  var startTime = 0;
+  var pauseTime = 0;
+  var endTime = 0;
+  var duration = 0;
+  // 监听视频播放开始事件
+  video.addEventListener('play', function() {
+    startTime = new Date().getTime();
+  });
+
+  video.addEventListener('pause', function () { //暂停开始执行的函数
+    pauseTime = new Date().getTime();
+    duration = (pauseTime - startTime) / 1000 + duration;
+  });
+
+  // 监听视频播放结束事件
+  video.addEventListener('ended', function() {
+    endTime = new Date().getTime();
+    duration = (endTime - startTime) / 1000 +duration; // 毫秒转换为秒
+    if (duration >= video.duration*0.9 && videoStatus == 0){
+      var formData = new FormData();
+      formData.append("classId",classId);
+      formData.append("userId",userId);
+      formData.append("videoId",videoId);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/updateStudentVideo');
+      xhr.send(formData);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          alert('观看完成');
+        }
+      };
+    }
+  });
+
+</script>
+</body>
+</html>

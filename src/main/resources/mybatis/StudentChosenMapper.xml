@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.StudentChosenMapper">
+
+    <select id="queryStudentChosenList" resultType="StudentChosen">
+        select * FROM T_studentChosen order by id
+    </select>
+
+    <select id="queryStudentChosenList_COUNT" resultType="Long">
+        select count(*) FROM T_studentChosen
+    </select>
+
+    <select id="queryStudentChosenById" resultType="StudentChosen">
+        select * from T_studentChosen where id = #{id}
+    </select>
+
+    <select id="queryStudentChosenByChosenAndStudent" resultType="StudentChosen">
+        select * from T_studentChosen where chosenId = #{chosen} and userId = #{student}
+    </select>
+
+    <select id="queryStudentChosenByExerciseAndStudentAndClass" resultType="StudentChosen">
+        select * from T_studentChosen where exerciseId = #{exercise} and userId = #{student} and classId = #{classId}
+    </select>
+
+    <select id="queryStudentChosenByExamAndStudentAndClass" resultType="StudentChosen">
+        select * from T_studentChosen where examId = #{exam} and userId = #{student} and classId = #{classId}
+    </select>
+
+    <select id="queryStudentChosenByExercise" resultType="StudentChosen">
+        select * from T_studentChosen where exerciseId = #{exercise}
+    </select>
+
+    <select id="queryStudentChosenByExam" resultType="StudentChosen">
+        select * from T_studentChosen where examId = #{exam}
+    </select>
+
+    <select id="queryStudentChosenByStudentAndClass" resultType="StudentChosen">
+        select * from T_studentChosen where userId = #{student} and classId = #{classId}
+    </select>
+
+    <select id="queryStudentChosenByStudent" resultType="StudentChosen">
+        select * from T_studentChosen where userId = #{student}
+    </select>
+
+    <insert id="addStudentChosen" parameterType="StudentChosen">
+        insert into T_studentChosen (exerciseId,chosenId,userId,answer,studentAnswer,correct,classId,examId) values (#{exerciseId},#{chosenId},#{userId},#{answer},#{studentAnswer},#{correct},#{classId},#{examId})
+    </insert>
+
+    <update id="updateStudentChosen" parameterType="StudentChosen">
+        update T_studentChosen
+        <set>
+            <if test="exerciseId != null">exerciseId=#{exerciseId},</if>
+            <if test="chosenId != null">chosenId=#{chosenId},</if>
+            <if test="userId != null">userId=#{userId},</if>
+            <if test="answer != null">answer=#{answer},</if>
+            <if test="studentAnswer != null">studentAnswer=#{studentAnswer},</if>
+            <if test="correct != null">correct=#{correct},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+    <delete id="deleteStudentChosen" parameterType="int">
+        delete from T_studentChosen where id=#{id}
+    </delete>
+
+    <delete id="deleteStudentChosenByClassAndExercise" parameterType="int">
+        delete from T_studentChosen where classId=#{classId} and exerciseId = #{exerciseId}
+    </delete>
+
+    <delete id="deleteStudentChosenByClassAndExam" parameterType="int">
+        delete from T_studentChosen where classId=#{classId} and examId = #{examId}
+    </delete>
+
+</mapper>

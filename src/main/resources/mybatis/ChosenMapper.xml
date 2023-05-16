@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.ChosenMapper">
+
+    <select id="queryChosenList" resultType="Chosen">
+        select * FROM T_chosen order by id
+    </select>
+
+    <select id="queryChosenList_COUNT" resultType="Long">
+        select count(*) FROM T_chosen
+    </select>
+
+    <select id="queryChosenById" resultType="Chosen">
+        select * from T_chosen where id = #{id}
+    </select>
+
+    <select id="queryChosenByExercise" resultType="Chosen">
+        select * from T_chosen where exerciseId = #{exercise} order by seq ASC
+    </select>
+
+    <select id="queryChosenByExam" resultType="Chosen">
+        select * from T_chosen where examId = #{exam} order by seq ASC
+    </select>
+
+    <insert id="addChosen" parameterType="Chosen">
+        insert into T_chosen (exerciseId,answer,question,chosenA,chosenB,chosenC,chosenD,seq,examId) values (#{exerciseId},#{answer},#{question},#{chosenA},#{chosenB},#{chosenC},#{chosenD},#{seq},#{examId})
+    </insert>
+
+    <update id="updateChosen" parameterType="Chosen">
+        update T_chosen
+        <set>
+            <if test="answer != null">answer=#{answer},</if>
+            <if test="question != null">question=#{question},</if>
+            <if test="chosenA != null">chosenA=#{chosenA},</if>
+            <if test="chosenB != null">chosenB=#{chosenB},</if>
+            <if test="chosenC != null">chosenC=#{chosenC},</if>
+            <if test="chosenD != null">chosenD=#{chosenD},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="deleteChosen" parameterType="int">
+        delete from T_chosen where id=#{id}
+    </delete>
+
+</mapper>

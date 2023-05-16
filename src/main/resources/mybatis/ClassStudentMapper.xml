@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.ClassStudentMapper">
+
+    <select id="queryClassStudentList" resultType="ClassStudent">
+        select * FROM T_classStudent order by id
+    </select>
+
+    <select id="queryClassStudentList_COUNT" resultType="Long">
+        select count(*) FROM T_classStudent
+    </select>
+
+    <select id="queryClassStudentById" resultType="ClassStudent">
+        select * from T_classStudent where id = #{id}
+    </select>
+
+    <select id="queryClassStudentListByClass" resultType="ClassStudent">
+        select * from T_classStudent where classId = #{classId}
+    </select>
+
+    <select id="queryClassStudentListByStudent" resultType="ClassStudent">
+        select * from T_classStudent where studentId = #{student}
+    </select>
+
+    <insert id="addClassStudent" parameterType="ClassStudent">
+        insert into T_classStudent (classId,studentId) values (#{classId},#{studentId})
+    </insert>
+
+    <update id="updateClassStudent" parameterType="ClassStudent">
+        update T_classStudent
+        <set>
+            <if test="classId != null">classId=#{classId},</if>
+            <if test="studentId != null">studentId=#{studentId},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="deleteClassStudent" parameterType="int">
+        delete from T_classStudent where id=#{id}
+    </delete>
+
+</mapper>

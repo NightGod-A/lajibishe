@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Exercise Management</title>
+  <link th:href="@{css/output.css}" rel="stylesheet" type="text/css">
+</head>
+<body class="bg-gray-100">
+<div class="container mx-auto py-8">
+  <div class="flex justify-between mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">习题管理</h1>
+    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            th:data-id="${teacher}"  th:onclick="jumpToTeacher(this.getAttribute('data-id'))">
+      个人中心
+    </button>
+    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            th:data-id="${teacher}" th:data-course="${course}" th:onclick="createExercise(this.getAttribute('data-id'),this.getAttribute('data-course'))">
+      新增习题
+    </button>
+  </div>
+  <div class="grid grid-cols-3 gap-4">
+    <div class="bg-white rounded-lg p-6" th:each="exercise:${exercises}">
+      <h2 class="text-xl font-bold text-gray-800 mb-4" th:text="${exercise.getName()}"></h2>
+      <p class="text-gray-600 text-sm mb-4" th:text="${#dates.format(exercise.getCreatTime(),'yyyy-MM-dd')}"></p>
+      <div class="flex justify-end">
+        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded mr-2"
+                th:data-id="${exercise.getId()}" th:data-name="${exercise.getName()}" th:onclick="Revise(this.getAttribute('data-name'),this.getAttribute('data-id'))">
+          修改
+        </button>
+        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded mr-2"
+                th:data-id="${exercise.getId()}" th:onclick="deleteExercise(this.getAttribute('data-id'))">
+          删除
+        </button>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mr-2"
+                th:data-id="${exercise.getId()}" th:onclick="jumpToViewExercise(this.getAttribute('data-id'))">
+          查看
+        </button>
+        <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded"
+                th:data-id="${exercise.getId()}" th:onclick="jumpToExerciseDistribute(this.getAttribute('data-id'))">
+          分配班级
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Revise Video Modal -->
+<div class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog"
+     aria-modal="true" id="revise-exercise-modal">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+    <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+         role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div
+                  class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+            <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+          </div>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3 class="text-lg leading-6 font-medium text-gray-900" id="revise-modal-headline">
+              修改习题
+            </h3>
+            <div class="mt-2">
+              <form>
+                <div>
+                  <label class="block text-gray-700 font-bold mb-2" for="revise-exercise-name">
+                    习题名称
+                  </label>
+                  <input
+                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          id="revise-exercise-name" name="revise-exercise-name" type="text"
+                          placeholder="请输入习题名称">
+                </div>
+                <input type="hidden" id="manage-id">
+                <br />
+                <input type="button" value="Submit"
+                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                       onclick="submitRevise()"/>
+
+                <input type="button" value="Close"
+                       class="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                       onclick="closeRevise()"/>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  const content2 = document.getElementById('revise-exercise-modal');
+  function closeRevise() {
+    content2.classList.add('hidden');
+  }
+  function Revise(exerciseName,exerciseId) {
+    content2.classList.remove('hidden');
+    var name = document.getElementById("revise-exercise-name");
+    var id = document.getElementById("manage-id");
+    name.value = exerciseName;
+    id.value = exerciseId;
+
+  }
+  function submitRevise(){
+    var formData = new FormData();
+    var name = document.getElementById("revise-exercise-name").value;
+    var id = document.getElementById("manage-id").value;
+    formData.append('exerciseName', name);
+    formData.append('exerciseId', id);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/reviseExercise');
+    xhr.send(formData);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        alert('修改成功');
+        window.location.reload();
+      } else {
+        alert('修改失败');
+        window.location.reload();
+      }
+    };
+  }
+
+  function createExercise(teacher,course){
+    window.location.href ='exerciseCreat?teacher='+teacher+'&course='+course;
+  }
+
+  function jumpToExerciseDistribute(exerciseId){
+    window.location.href ="/exerciseDistribute?exerciseId="+exerciseId;
+
+  }
+
+  function jumpToViewExercise(exerciseId){
+    window.location.href ="/viewExercisePage?exercise="+exerciseId;
+
+  }
+
+  function jumpToTeacher(teacher){
+    window.location.href ="/jumpToTeacher?id="+teacher;
+  }
+
+  function deleteExercise(exerciseId){
+    var formData = new FormData();
+    formData.append('exerciseId',exerciseId);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/deleteExercise');
+    xhr.send(formData);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        alert('删除成功');
+        window.location.reload();
+      } else {
+        alert('删除失败');
+        window.location.reload();
+      }
+    };
+  }
+</script>
+
+</body>
+</html>

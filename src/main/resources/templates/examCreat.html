@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link th:href="@{css/output.css}" rel="stylesheet" type="text/css">
+    <script th:src="@{js/jquery-3.3.1.min.js}"></script>
+</head>
+<body class="bg-gray-100">
+<input type="hidden" id="teacher" th:value="${teacher}">
+<input type="hidden" id="course" th:value="${course}">
+<div class="container mx-auto p-4">
+
+    <button id="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-6  float-right" onclick="submitQuestions()">
+        提交
+    </button>
+    <h1 class="text-2xl font-bold mb-4">创建考试</h1>
+
+
+    <div class="mb-4">
+        <h2 class="text-lg font-bold mb-2">单选题</h2>
+        <button id="addSingleQuestion" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-4" onclick="addSingleQuestion()">
+            新增单选题
+        </button>
+    </div>
+    <div class="mb-4">
+        <h2 class="text-lg font-bold mb-2">判断题</h2>
+        <button id="addTrueFalseQuestion" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-4" onclick="addJudgmentQuestion()">
+            新增判断题
+        </button>
+    </div>
+    <div class="mb-4 hidden">
+        <h2 class="text-lg font-bold mb-2">Short Answer Question</h2>
+        <button id="addShortAnswerQuestion" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-4" onclick="addshortAnswerQuestion()">
+            Add New Short Answer Question
+        </button>
+    </div>
+
+    <form class="bg-white p-4 rounded shadow mb-4">
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="examName">习题名称</label>
+            <input
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="examName" type="text" placeholder="请输入习题名称">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="startTime">开始时间</label>
+            <input
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="startTime" type="datetime-local" placeholder="请输入开始时间">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="endTime">结束时间</label>
+            <input
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="endTime" type="datetime-local" placeholder="请输入结束时间">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="examTime">考试时长(分钟)</label>
+            <input
+                    class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="examTime" type="text" placeholder="请输入考试时长">
+        </div>
+
+        <div class="mb-4">
+            <h2 class="text-lg font-bold mb-2">单选题</h2>
+            <div id="singleQuestions" >
+                <div class="bg-gray-200 p-4 rounded mb-2 hidden">
+                    <div class="mb-2">
+                        <span class="font-bold mr-2">题目：</span>
+                        <textarea class="w-full px-3 py-2 border rounded-md  " placeholder="请输入题目"></textarea>
+
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-bold mb-2">选项</label>
+                        <div>
+                            <div class="flex items-center mb-2">
+                                <input class="mr-2 leading-tight" type="radio" name="option1" id="option1_1"
+                                       value="1">
+                                <label class="text-gray-700" for="option1_1">
+                                    <input
+                                            class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            size="255" type="text" placeholder="请输入选项内容">
+                                </label>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <input class="mr-2 leading-tight" type="radio" name="option1" id="option1_2"
+                                       value="2">
+                                <label class="text-gray-700" for="option1_2">
+                                    <input
+                                            class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            size="255" type="text" placeholder="请输入选项内容">
+                                </label>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <input class="mr-2 leading-tight" type="radio" name="option1" id="option1_3"
+                                       value="3">
+                                <label class="text-gray-700" for="option1_3">
+                                    <input
+                                            class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            size="255" type="text" placeholder="请输入选项内容">
+                                </label>
+                            </div>
+                            <button
+                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2 ">删除</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div id="judgmentQuestion" class="mb-4">
+            <h2 class="text-lg font-bold mb-2">判断题</h2>
+            <div class="bg-gray-200 p-4 rounded mb-2 hidden">
+                <div class="my-2">
+                    <textarea class="w-full px-3 py-2 border rounded-md  " placeholder="请输入题目"></textarea>
+
+                </div>
+                <div class="my-2">
+                    <span class="mr-4">正确</span>
+                    <label class="inline-flex items-center">
+                        <input type="radio" class="form-radio" name="answer" value="true">
+                        <span class="ml-2">是</span>
+                    </label>
+                    <label class="inline-flex items-center ml-6">
+                        <input type="radio" class="form-radio" name="answer" value="false">
+                        <span class="ml-2">否</span>
+                    </label>
+                </div>
+                <button
+                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2 ">删除</button>
+            </div>
+        </div>
+
+        <!-- 简答题 -->
+        <div id="shortAnswerQuestions" class="mb-4 hidden">
+            <h2 class="text-lg font-bold mb-2">简答题</h2>
+            <div class="bg-gray-200 p-4 rounded mb-2 ">
+                <div class="my-2">
+                    <textarea class="w-full px-3 py-2 border rounded-md  " placeholder="请输入题目"></textarea>
+                </div>
+                <input type="button" value="删除" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2 " onclick="del()"/>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+<script type="text/javascript">
+
+    var singleQuestionCount = 0;
+
+    var judgmentQuestionCount = 0;
+
+    var shortAnswerQuestionCount = 0;
+
+    function del(itemid){
+        document.getElementById('singleQuestion'+itemid).remove();
+    }
+    function delJudgment(itemid){
+        document.getElementById('judgmentQuestion'+itemid).remove();
+    }
+
+    function submitQuestions(){
+        var examName = document.getElementById('examName').value;
+        var startTime = document.getElementById('startTime').value;
+        var endTime = document.getElementById('endTime').value
+        var startDate = new Date(startTime);
+        var endDate = new Date(endTime);
+        if (startDate.getTime() > endDate.getTime()){
+            alert("开始时间不可以大于结束时间");
+            return;;
+        }
+        var examTime = document.getElementById('examTime').value;
+        if (Number.isInteger(examTime)){
+            alert("考试时长为请输入正整数");
+            return;
+        }
+        var teacher = document.getElementById('teacher').value;
+        var course = document.getElementById('course').value;
+        var singleQuestionName = [];
+        var singleQuestionOptionA = [];
+        var singleQuestionOptionB = [];
+        var singleQuestionOptionC = [];
+        var singleQuestionOptionD = [];
+        var singleQuestionCheck = [];
+        if (singleQuestionCount != 0){
+            for (var i = 0; i< singleQuestionCount; i++) {
+                if (document.getElementById('singleQuestionName' + i) !== null) {
+                    var name = document.getElementById('singleQuestionName' + i).value;
+                    singleQuestionName.push(name);
+                    var optionA = document.getElementById('text' + i + '_1').value;
+                    var optionB = document.getElementById('text' + i + '_2').value;
+                    var optionC = document.getElementById('text' + i + '_3').value;
+                    var optionD = document.getElementById('text' + i + '_4').value;
+                    singleQuestionOptionA.push(optionA);
+                    singleQuestionOptionB.push(optionB);
+                    singleQuestionOptionC.push(optionC);
+                    singleQuestionOptionD.push(optionD);
+                    var check = document.getElementsByName('option' + i);
+                    for (var j = 0; j < check.length; j++) {
+                        if (check[j].checked) {
+                            singleQuestionCheck.push(check[j].value);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        var judgmentQuestionName = [];
+        var judgmentQuestionCheck = [];
+        if (judgmentQuestionCount != 0){
+            for (var i =0; i < judgmentQuestionCount; i++){
+                if(document.getElementById('judgmentQuestionName' + i) !== null){
+                    var judgmentName = document.getElementById('judgmentQuestionName' + i).value;
+                    judgmentQuestionName.push(judgmentName);
+                    var judgmentCheck = document.getElementsByName('answer' + i);
+                    for (var j = 0; j < judgmentCheck.length; j++) {
+                        if (judgmentCheck[j].checked) {
+                            judgmentQuestionCheck.push(judgmentCheck[j].value);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        var jsonString = {
+            'examName' : examName,
+            'examTime' : examTime,
+            'startTime' : startTime,
+            'endTime' : endTime,
+            'course' : course,
+            'teacher' : teacher,
+            'singleQuestionName': singleQuestionName,
+            'singleQuestionOptionA': singleQuestionOptionA,
+            'singleQuestionOptionB': singleQuestionOptionB,
+            'singleQuestionOptionC': singleQuestionOptionC,
+            'singleQuestionOptionD': singleQuestionOptionD,
+            'singleQuestionCheck': singleQuestionCheck,
+            'judgmentQuestionName': judgmentQuestionName,
+            'judgmentQuestionCheck': judgmentQuestionCheck
+        };
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/addExam');
+        xhr.send(JSON.stringify(jsonString));
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('考试创建成功');
+                window.location.href ="/examManage?teacher="+teacher+"&course="+course;
+
+            } else {
+                alert('考试创建失败');
+            }
+        };
+    }
+
+
+    function addshortAnswerQuestion(){
+        var a = '<div class="bg-gray-200 p-4 rounded mb-2" id="saq'+ shortAnswerQuestionCount +'">'+
+            '<div class="my-2">'+
+            '<textarea class="w-full px-3 py-2 border rounded-md " id="shortAnswerQuestion'+ shortAnswerQuestionCount +'" placeholder="请输入题目"></textarea>'+
+            '</div>'+
+            '<input type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2 " value="删除" onclick = "del('+shortAnswerQuestionCount+')"/>'+
+            '</div>';
+        shortAnswerQuestionCount++;
+        $('#shortAnswerQuestions').append(a);
+    }
+
+
+    function addJudgmentQuestion(){
+        var a = '<div class="bg-gray-200 p-4 rounded mb-2" id="judgmentQuestion'+ judgmentQuestionCount + '">' +
+            '<div class="my-2">' +
+            '<span class="font-bold mr-2">题目：</span>'+
+            '<textarea class="w-full px-3 py-2 border rounded-md" id="judgmentQuestionName'+ judgmentQuestionCount +'" placeholder="请输入题目"></textarea>'+
+            '</div>'+
+            ' <div class="my-2">'+
+            '<span class="mr-4">正确</span>'+
+            '<label class="inline-flex items-center">'+
+            '<input type="radio" class="form-radio" name="answer'+judgmentQuestionCount+'" value="1">'+
+            '<span class="ml-2">是</span>'+
+            ' </label>'+
+            '<label class="inline-flex items-center ml-6">'+
+            '<input type="radio" class="form-radio" name="answer'+judgmentQuestionCount+'" value="0">'+
+            ' <span class="ml-2">否</span>'+
+            '  </label>'+
+            '</div>'+
+            '<input type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2 " value="删除" onclick = "delJudgment('+judgmentQuestionCount+')"/>'+
+            '</div>';
+        judgmentQuestionCount++;
+        $("#judgmentQuestion").append(a);
+    }
+
+
+    function addSingleQuestion(){
+        var b = '<div class="bg-gray-200 p-4 rounded mb-2" id="singleQuestion'+ singleQuestionCount +'">'+
+            '<div class="mb-2">'+
+            '<span class="font-bold mr-2">题目：</span>'+
+            '<textarea class="w-full px-3 py-2 border rounded-md" id="singleQuestionName'+ singleQuestionCount +'" placeholder="请输入题目"></textarea>'+
+
+            '</div>'+
+            '<div class="mb-4">'+
+            '<label class="block text-gray-700 font-bold mb-2">选项</label>'+
+            '<div>'+
+            '<div class="flex items-center mb-2">'+
+            '<input class="mr-2 leading-tight" type="radio" name="option'+singleQuestionCount+'" id="option'+singleQuestionCount+'_1"'+
+            'value="1">A'+
+            '<label class="text-gray-700" for="option'+singleQuestionCount+'_1">'+
+            '<input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"'+
+            'id="text'+singleQuestionCount+'_1"size="255" type="text" placeholder="请输入选项内容">'+
+            '</label>'+
+            '</div>'+
+            '<div class="flex items-center mb-2">'+
+            '<input class="mr-2 leading-tight" type="radio" name="option'+singleQuestionCount+'" id="option'+singleQuestionCount+'_2"'+
+            'value="2">B'+
+            '<label class="text-gray-700" for="option'+singleQuestionCount+'_2">'+
+            '<input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"'+
+            'id="text'+singleQuestionCount+'_2"size="255" type="text" placeholder="请输入选项内容">'+
+            '</label>'+
+            '</div>'+
+            '<div class="flex items-center mb-2">'+
+            '<input class="mr-2 leading-tight" type="radio" name="option'+singleQuestionCount+'" id="option'+singleQuestionCount+'_3"'+
+            'value="3">C'+
+            '<label class="text-gray-700" for="option'+singleQuestionCount+'_3">'+
+            '<input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"'+
+            'id="text'+singleQuestionCount+'_3"size="255" type="text" placeholder="请输入选项内容">'+
+            '</label>'+
+            '</div>'+
+            '<div class="flex items-center mb-2">'+
+            '<input class="mr-2 leading-tight" type="radio" name="option'+singleQuestionCount+'" id="option'+singleQuestionCount+'_4"'+
+            'value="4">D'+
+            '<label class="text-gray-700" for="option'+singleQuestionCount+'_4">'+
+            '<input class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"'+
+            'id="text'+singleQuestionCount+'_4"size="255" type="text" placeholder="请输入选项内容">'+
+            '</label>'+
+            '</div>'+
+            '<input type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4 mr-2 " value="删除" onclick = "del('+singleQuestionCount+')"/>'+
+            '</div>'+
+            '</div>'+
+            '</div>';
+
+        $("#singleQuestions").append(b);
+
+        singleQuestionCount++;
+    }
+
+
+
+</script>
+</body>
+</html>

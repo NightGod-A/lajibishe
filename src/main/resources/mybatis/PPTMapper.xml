@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.PPTMapper">
+
+    <select id="queryPPTList" resultType="PPT">
+        select * FROM T_ppt order by id
+    </select>
+
+    <select id="queryPPTList_COUNT" resultType="Long">
+        select count(*) FROM T_ppt
+    </select>
+
+    <select id="queryPPTById" resultType="PPT">
+        select * from T_ppt where id = #{id}
+    </select>
+
+
+    <select id="queryPPTByCourse" resultType="PPT">
+        select * from T_ppt where courseId = #{course}
+    </select>
+
+    <insert id="addPPT" parameterType="PPT" useGeneratedKeys="true" keyProperty="id">
+        insert into T_ppt (courseId,pptName,creatTime,pageNum,ppt) values (#{courseId},#{pptName},#{creatTime},#{pageNum},#{ppt})
+    </insert>
+
+    <update id="updatePPT" parameterType="PPT">
+        update T_ppt
+        <set>
+            <if test="courseId != null">courseId=#{courseId},</if>
+            <if test="pptName != null">pptName=#{pptName},</if>
+            <if test="creatTime != null">creatTime=#{creatTime},</if>
+            <if test="pageNum != null">pageNum=#{pageNum},</if>
+            <if test="ppt != null">ppt=#{ppt},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+    <delete id="deletePPT" parameterType="int">
+        delete from T_ppt where id=#{id}
+    </delete>
+
+</mapper>

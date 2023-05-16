@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Exercise Management</title>
+  <link th:href="@{css/output.css}" rel="stylesheet" type="text/css">
+</head>
+<body class="bg-gray-100">
+<div class="container mx-auto py-8">
+  <div class="flex justify-between mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">班级管理</h1>
+    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            onclick="jumpToTeacherByCourse()">
+      个人中心
+    </button>
+    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+    onclick="classDisplay()">
+      新增班级
+    </button>
+  </div>
+  <div class="grid grid-cols-3 gap-4">
+    <div class="bg-white rounded-lg p-6" th:each="class:${classList}">
+      <h2 class="text-xl font-bold text-gray-800 mb-4" th:text="${class.getName()}"></h2>
+      <p class="text-gray-600 text-sm mb-4" th:text="${#dates.format(class.getCreatTime(),'yyyy-MM-dd')}"></p>
+      <p class="text-gray-600 text-sm mb-4" th:text="ID+${class.getId()}"></p>
+      <div class="flex justify-end">
+        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded mr-2"
+                th:data-id="${class.getId()}" th:onclick="deleteClass(this.getAttribute('data-id'))">
+          删除
+        </button>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded"
+        th:data-id="${class.getId()}" th:onclick="jumpToStudentManage(this.getAttribute('data-id'))">
+          管理
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog"
+     aria-modal="true" id="add-class-modal">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+    <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+         role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div
+                  class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+            <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+          </div>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+              添加班级
+            </h3>
+            <div class="mt-2">
+              <form>
+                <input type="hidden" th:value="${course}" id="courseId">
+                <div>
+                  <label class="block text-gray-700 font-bold mb-2" for="class-name">
+                    班级名称
+                  </label>
+                  <input
+                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          id="class-name" name="class-name" type="text"
+                          placeholder="请输入课程名称">
+                </div>
+
+                <br />
+                <input type="button" value="Submit"
+                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                       onclick="submitClass()"/>
+
+                <input type="button" value="Close"
+                       class="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                       onclick="cancelClass()"/>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  const classModal = document.getElementById("add-class-modal");
+
+  function jumpToTeacherByCourse(){
+    var course = document.getElementById('courseId').value;
+    window.location.href ="/jumpToTeacherByCourse?course="+course;
+
+  }
+
+  function submitClass(){
+    var course = document.getElementById('courseId').value;
+    var className = document.getElementById('class-name').value;
+    var formData = new FormData();
+    formData.append("course",course);
+    formData.append("className",className);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/addClass');
+    xhr.send(formData);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        alert('班级创建成功');
+        window.location.reload();
+      } else {
+        alert('班级创建失败');
+        window.location.reload();
+      }
+    };
+  }
+
+  function deleteClass(classId){
+    var formData = new FormData();
+    formData.append('classId',classId);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/deleteClass');
+    xhr.send(formData);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        alert('删除成功');
+        window.location.reload();
+      } else {
+        alert('删除失败');
+        window.location.reload();
+      }
+    };
+  }
+
+  function classDisplay(){
+    classModal.classList.remove("hidden");
+  }
+  function cancelClass(){
+    classModal.classList.add("hidden");
+    location.reload();
+  }
+
+  function jumpToStudentManage(classId){
+    window.location.href ="/studentManage?classId="+classId;
+  }
+</script>
+
+</body>
+</html>

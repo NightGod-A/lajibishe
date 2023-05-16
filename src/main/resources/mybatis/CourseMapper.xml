@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.CourseMapper">
+
+    <select id="queryCourseList" resultType="Course">
+        select * FROM T_course order by id
+    </select>
+
+    <select id="queryCourseList_COUNT" resultType="Long">
+        select count(*) FROM T_course
+    </select>
+
+    <select id="queryCourseById" resultType="Course">
+        select * from T_course where id = #{id}
+    </select>
+
+    <select id="queryCourseByTeacher" resultType="Course">
+        select * from T_course where teacherId = #{teacher}
+    </select>
+
+    <insert id="addCourse" parameterType="Course">
+        insert into T_course (description,isEnable,name,picture,teacherId,creatTime) values (#{description},#{isEnable},#{name},#{picture},#{teacherId},#{creatTime})
+    </insert>
+
+    <update id="updateCourse" parameterType="Course">
+        update T_course
+        <set>
+            <if test="description != null">description=#{description},</if>
+            <if test="isEnable != null">isEnable=#{isEnable},</if>
+            <if test="name != null">name=#{name},</if>
+            <if test="picture != null">picture=#{picture},</if>
+        </set>
+         where id=#{id}
+    </update>
+
+    <update id="updateCourseEnable" parameterType="Course">
+        update T_course set isEnable=#{isEnable} where id=#{id}
+    </update>
+
+    <delete id="deleteCourse" parameterType="int">
+        delete from T_course where id=#{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+  <meta charset="utf-8">
+  <title></title>
+  <link th:href="@{css/output.css}" rel="stylesheet" type="text/css">
+</head>
+<body class="flex flex-col min-h-screen">
+<input type="hidden" id="classId" th:value="${classId}">
+<!-- Header -->
+<header class="bg-blue-500 py-4">
+  <div class="container mx-auto flex justify-between items-center px-4">
+    <a href="#" class="text-white text-xl font-bold">网上学习系统</a>
+
+  </div>
+</header>
+
+<section class="flex-grow bg-gray-100 py-20">
+  <div class="container mx-auto flex">
+    <!-- Sidebar -->
+    <div class="w-1/4">
+      <ul class="list-none">
+        <li class="py-4 px-6 text-lg font-bold text-gray-800 mb-4">
+          <button id="video-button"
+                  class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">视频</button>
+        </li>
+        <li class="py-4 px-6 text-lg font-bold text-gray-800 mb-4">
+          <button id="ppt-button"
+                  class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">PPT</button>
+        </li>
+
+        <li class="py-4 px-6 text-lg font-bold text-gray-800 mb-4">
+          <button id="exercise-button"
+                  class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">习题</button>
+        </li>
+        <li class="py-4 px-6 text-lg font-bold text-gray-800 mb-4">
+          <button id="exam-button"
+                  class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">考试</button>
+
+        </li>
+      </ul>
+    </div>
+
+
+    <div class="w-full lg:w-3/4">
+      <div id="video" class="flex flex-col lg:flex-row hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" >
+
+          <div class="bg-white rounded-lg overflow-hidden shadow-md" th:each="studentVideo:${studentVideos}">
+            <img th:src="@{/show(fileName=${studentVideo.getVideo().getPicture()})}" alt="Video 1" class="w-full">
+            <div class="p-4">
+              <h2 class="text-lg font-medium mb-2" th:text="${studentVideo.getVideo().getName()}"></h2>
+              <p class="text-gray-600 text-sm mb-4" th:text="${#dates.format(studentVideo.getVideo().getCreatTime(),'yyyy-MM-dd')}"></p>
+              <p class="text-gray-600 text-sm mb-4" >
+                <span th:if="${studentVideo.getStatus()}">已完成</span>
+                <span th:if="!${studentVideo.getStatus()}">未完成</span>
+              </p>
+              <button
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      th:data-user="${user.getId()}" th:data-video="${studentVideo.getVideo().getId()}" th:onclick="videoStudent(this.getAttribute('data-user'),this.getAttribute('data-video'))">
+                观看
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div id="ppt" class="flex flex-col lg:flex-row hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" >
+
+          <div class="bg-white rounded-lg overflow-hidden shadow-md" th:each="ppt:${classPPTS}">
+
+            <div class="p-4">
+              <h2 class="text-lg font-medium mb-2" th:text="${ppt.getPpt().getPptName()}"></h2>
+              <p class="text-gray-600 text-sm mb-4" th:text="${#dates.format(ppt.getPpt().getCreatTime(),'yyyy-MM-dd')}"></p>
+
+              <button
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                       th:data-ppt="${ppt.getPpt().getId()}" th:onclick="jumpToPPTView(this.getAttribute('data-ppt'))">
+                观看
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div id="exercise" class="hidden flex flex-col lg:flex-row">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+          <div class="bg-white rounded-lg overflow-hidden shadow-md" th:each="studentExercise:${studentExercises}">
+            <div class="p-4">
+              <h2 class="text-lg font-medium mb-2" th:text="${studentExercise.getExercise().getName()}"></h2>
+              <p class="text-gray-600 text-sm mb-4" th:text="${#dates.format(studentExercise.getExercise().getCreatTime(),'yyyy-MM-dd')}"></p>
+              <p class="text-gray-600 text-sm mb-4" >
+                <span th:if="${studentExercise.getStatus()} == 1">已完成</span>
+                <span th:if="${studentExercise.getStatus()} == 0">未完成</span>
+              </p>
+              <button
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" th:if="!${studentExercise.getStatus()}"
+                      th:data-user="${user.getId()}" th:data-exercise="${studentExercise.getExercise().getId()}" th:onclick="viewExercise(this.getAttribute('data-user'),this.getAttribute('data-exercise'))">
+                开始
+              </button>
+              <button
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" th:if="${studentExercise.getStatus()}"
+                      th:data-user="${user.getId()}" th:data-exercise="${studentExercise.getExercise().getId()}" th:onclick="viewExerciseResult(this.getAttribute('data-user'),this.getAttribute('data-exercise'))">
+                查看结果
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div id="exam" class="hidden flex flex-col lg:flex-row">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+          <div class="bg-white rounded-lg overflow-hidden shadow-md" th:each="studentExam:${studentExams}">
+            <div class="p-4">
+              <h2 class="text-lg font-medium mb-2" th:text="${studentExam.getExam().getName()}"></h2>
+              <p class="text-gray-600 text-sm mb-4">开始时间：</p>
+              <p class="text-gray-600 text-sm mb-4" th:text="${#dates.format(studentExam.getExam().getStartTime(),'yyyy-MM-dd HH:mm')}"></p>
+              <p class="text-gray-600 text-sm mb-4">截止时间：</p>
+              <p class="text-gray-600 text-sm mb-4" th:text="${#dates.format(studentExam.getExam().getEndTime(),'yyyy-MM-dd HH:mm')}"></p>
+
+              <p class="text-gray-600 text-sm mb-4" >
+                <span th:if="${studentExam.getStatus()} == 2">已完成</span>
+                <span th:if="${studentExam.getStatus()} == 1">答题肿</span>
+                <span th:if="${studentExam.getStatus()} == -1">超时</span>
+                <span th:if="${studentExam.getStatus()} == 0">未完成</span>
+              </p>
+              <button
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" th:if="${studentExam.getStatus() == 0 and (#dates.createNow().before(studentExam.getExam().getStartTime()) or #dates.createNow().after(studentExam.getExam().getEndTime()))}">
+                不在答题时间内
+              </button>
+              <button
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" th:if="${studentExam.getStatus() == 0 and #dates.createNow().after(studentExam.getExam().getStartTime()) and #dates.createNow().before(studentExam.getExam().getEndTime())}"
+                      th:data-user="${user.getId()}" th:data-exam="${studentExam.getExam().getId()}" th:onclick="viewExam(this.getAttribute('data-user'),this.getAttribute('data-exam'))">
+                开始
+              </button>
+              <button
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" th:if="${studentExam.getStatus() == 1 and #dates.createNow().after(studentExam.getExam().getStartTime()) and #dates.createNow().before(studentExam.getExam().getEndTime())}"
+                      th:data-user="${user.getId()}" th:data-exam="${studentExam.getExam().getId()}" th:onclick="viewExam(this.getAttribute('data-user'),this.getAttribute('data-exam'))">
+                继续答题
+              </button>
+              <button
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" th:if="${studentExam.getStatus() == -1}"
+                       th:onclick="canNot()">
+                无法查看
+              </button>
+              <button
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" th:if="${studentExam.getStatus() == 2}"
+                      th:data-user="${user.getId()}" th:data-exam="${studentExam.getExam().getId()}" th:onclick="viewExamResult(this.getAttribute('data-user'),this.getAttribute('data-exam'))">
+                查看结果
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script type="text/javascript">
+  const btn1 = document.getElementById('video-button');
+  const btn2 = document.getElementById('exercise-button');
+  const btn3 = document.getElementById('exam-button');
+  const btn4 = document.getElementById('ppt-button');
+
+  const content1 = document.getElementById('video');
+  const content2 = document.getElementById('exercise');
+  const content3 = document.getElementById('exam');
+  const content4 = document.getElementById('ppt');
+
+  const classId = document.getElementById('classId').value;
+
+  // show content1 by default
+  content1.classList.remove('hidden');
+
+  btn1.addEventListener('click', () => {
+    content1.classList.remove('hidden');
+    content2.classList.add('hidden');
+    content3.classList.add('hidden');
+    content4.classList.add('hidden');
+
+  });
+
+  btn2.addEventListener('click', () => {
+    content1.classList.add('hidden');
+    content2.classList.remove('hidden');
+    content3.classList.add('hidden');
+    content4.classList.add('hidden');
+
+  });
+
+  btn3.addEventListener('click', () => {
+    content1.classList.add('hidden');
+    content2.classList.add('hidden');
+    content3.classList.remove('hidden');
+    content4.classList.add('hidden');
+
+  });
+
+  btn4.addEventListener('click', () => {
+    content1.classList.add('hidden');
+    content2.classList.add('hidden');
+    content3.classList.add('hidden');
+    content4.classList.remove('hidden');
+
+  });
+
+  function videoStudent(user,video){
+    window.location.href ="/videoStudent?user="+user+"&video="+video+"&classId="+classId;
+  }
+
+  function viewExercise(user,exercise){
+    window.location.href ="/viewExercise?user="+user+"&exercise="+exercise+"&classId="+classId;
+  }
+
+  function viewExerciseResult(user,exercise){
+    window.location.href ="/viewExerciseResult?user="+user+"&exercise="+exercise+"&classId="+classId;
+  }
+
+  function viewExam(user,exam){
+    window.location.href ="/viewExam?user="+user+"&exam="+exam+"&classId="+classId;
+  }
+
+  function viewExamResult(user,exam){
+    window.location.href ="/viewExamResult?user="+user+"&exam="+exam+"&classId="+classId;
+  }
+  function jumpToPPTView(pptId){
+    window.location.href ="/pptView?pptId="+pptId;
+  }
+  function canNot(){
+    alert("超时无法查看或作答");
+  }
+</script>
+</body>
+</html>

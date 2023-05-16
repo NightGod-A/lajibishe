@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.StudentJudgementMapper">
+
+    <select id="queryStudentJudgementList" resultType="StudentJudgement">
+        select * FROM T_studentJudgement order by id
+    </select>
+
+    <select id="queryStudentJudgementList_COUNT" resultType="Long">
+        select count(*) FROM T_studentJudgement
+    </select>
+
+    <select id="queryStudentJudgementById" resultType="StudentJudgement">
+        select * from T_studentJudgement where id = #{id}
+    </select>
+
+    <select id="queryStudentJudgementByJudgementAndStudent" resultType="StudentJudgement">
+        select * from T_studentJudgement where judgementId = #{judgement} and userId = #{student}
+    </select>
+
+    <select id="queryStudentJudgementByExerciseAndStudentAndClass" resultType="StudentJudgement">
+        select * from T_studentJudgement where exerciseId = #{exercise} and userId = #{student} and classId = #{classId}
+    </select>
+
+    <select id="queryStudentJudgementByExamAndStudentAndClass" resultType="StudentJudgement">
+        select * from T_studentJudgement where examId = #{exam} and userId = #{student} and classId = #{classId}
+    </select>
+
+    <select id="queryStudentJudgementByExercise" resultType="StudentJudgement">
+        select * from T_studentJudgement where exerciseId = #{exercise}
+    </select>
+
+    <select id="queryStudentJudgementByExam" resultType="StudentJudgement">
+        select * from T_studentJudgement where examId = #{exam}
+    </select>
+
+    <select id="queryStudentJudgementByStudentAndClass" resultType="StudentJudgement">
+        select * from T_studentJudgement where userId = #{student} and classId = #{classId}
+    </select>
+
+    <select id="queryStudentJudgementByStudent" resultType="StudentJudgement">
+        select * from T_studentJudgement where userId = #{student}
+    </select>
+
+    <insert id="addStudentJudgement" parameterType="StudentJudgement">
+        insert into T_studentJudgement (exerciseId,judgementId,userId,answer,studentAnswer,correct,classId,examId) values (#{exerciseId},#{judgementId},#{userId},#{answer},#{studentAnswer},#{correct},#{classId},#{examId})
+    </insert>
+
+    <update id="updateStudentJudgement" parameterType="StudentJudgement">
+        update T_studentJudgement
+        <set>
+            <if test="exerciseId != null">exerciseId=#{exerciseId},</if>
+            <if test="examId != null">examId=#{examId},</if>
+            <if test="judgementId != null">judgementId=#{judgementId},</if>
+            <if test="userId != null">userId=#{userId},</if>
+            <if test="answer != null">answer=#{answer},</if>
+            <if test="studentAnswer != null">studentAnswer=#{studentAnswer},</if>
+            <if test="correct != null">correct=#{correct},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+    <delete id="deleteStudentJudgement" parameterType="int">
+        delete from T_studentJudgement where id=#{id}
+    </delete>
+
+    <delete id="deleteStudentJudgementByClassAndExercise" parameterType="int">
+        delete from T_studentJudgement where classId=#{classId} and exerciseId = #{exerciseId}
+    </delete>
+
+    <delete id="deleteStudentJudgementByClassAndExam" parameterType="int">
+        delete from T_studentJudgement where classId=#{classId} and examId = #{examId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.ExerciseMapper">
+
+    <select id="queryExerciseList" resultType="Exercise">
+        select * FROM T_exercise order by id
+    </select>
+
+    <select id="queryExerciseList_COUNT" resultType="Long">
+        select count(*) FROM T_exercise
+    </select>
+
+    <select id="queryExerciseById" resultType="Exercise">
+        select * from T_exercise where id = #{id}
+    </select>
+
+    <select id="queryExerciseByTeacher" resultType="Exercise">
+        select * from T_exercise where teacherId = #{teacher}
+    </select>
+
+    <select id="queryExerciseByCourse" resultType="Exercise">
+        select * from T_exercise where courseId = #{course}
+    </select>
+
+    <insert id="addExercise" parameterType="Exercise" useGeneratedKeys="true" keyProperty="id">
+        insert into T_exercise (courseId,name,teacherId,creatTime) values (#{courseId},#{name},#{teacherId},#{creatTime})
+    </insert>
+
+    <update id="updateExercise" parameterType="Exercise">
+        update T_exercise
+        <set>
+            <if test="courseId != null">courseId=#{courseId},</if>
+            <if test="teacherId != null">teacherId=#{teacherId},</if>
+            <if test="name != null">name=#{name},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+    <delete id="deleteExercise" parameterType="int">
+        delete from T_exercise where id=#{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.UserMapper">
+
+    <select id="queryUserList" resultType="User">
+        select * FROM T_user order by id
+    </select>
+
+    <select id="queryUserList_COUNT" resultType="Long">
+        select count(*) FROM T_user
+    </select>
+
+    <select id="queryUserListByLike" resultType="User">
+        select * FROM T_User where type = 1 and name like concat('%',#{nameAndId},'%') or id like concat('%',#{nameAndId},'%') order by id
+    </select>
+
+    <select id="queryUserListByLike_COUNT" resultType="Long">
+        select count(*) FROM T_user where type = 1 and name like concat('%',#{nameAndId},'%') or phone like concat('%',#{nameAndId},'%')
+    </select>
+
+    <select id="queryUserById" resultType="User">
+        select * from T_user where id = #{id}
+    </select>
+
+    <select id="queryUserByPhone" resultType="User">
+        select * from T_user where phone = #{phone}
+    </select>
+
+    <insert id="addUser" parameterType="User">
+        insert into T_user (phone,password,name,type,gender) values (#{phone},#{password},#{name},#{type},#{gender})
+    </insert>
+
+    <update id="updateUser" parameterType="User">
+        update T_user
+        <set>
+            <if test="phone != null">phone=#{phone},</if>
+            <if test="password != null">password=#{password},</if>
+            <if test="name != null">name=#{name},</if>
+            <if test="type != null">type=#{type},</if>
+            <if test="gender != null">gender=#{gender},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="int">
+        delete from T_user where id=#{id}
+    </delete>
+
+</mapper>

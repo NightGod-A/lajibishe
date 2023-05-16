@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.ClassPPTMapper">
+
+    <select id="queryClassPPTList" resultType="ClassPPT">
+        select * FROM T_classPPT order by id
+    </select>
+
+    <select id="queryClassPPTList_COUNT" resultType="Long">
+        select count(*) FROM T_classPPT
+    </select>
+
+    <select id="queryClassPPTById" resultType="ClassPPT">
+        select * from T_classPPT where id = #{id}
+    </select>
+
+    <select id="queryClassPPTListByClass" resultType="ClassPPT">
+        select * from T_classPPT where classId = #{classId}
+    </select>
+
+    <select id="queryClassPPTByClassAndPPT" resultType="ClassPPT">
+        select * from T_classPPT where classId = #{classId} and pptId=#{pptId}
+    </select>
+
+    <select id="queryClassPPTListByPPT" resultType="ClassPPT">
+        select * from T_classPPT where pptId = #{pptId}
+    </select>
+
+    <insert id="addClassPPT" parameterType="ClassPPT">
+        insert into T_classPPT (classId,pptId) values (#{classId},#{pptId})
+    </insert>
+
+    <update id="updateClassPPT" parameterType="ClassPPT">
+        update T_classPPT
+        <set>
+            <if test="classId != null">classId=#{classId},</if>
+            <if test="pptId != null">pptId=#{pptId},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="deleteClassPPT" parameterType="int">
+        delete from T_classPPT where id=#{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.JudgementMapper">
+
+    <select id="queryJudgementList" resultType="Judgement">
+        select * FROM T_judgement order by id
+    </select>
+
+    <select id="queryJudgementList_COUNT" resultType="Long">
+        select count(*) FROM T_judgement
+    </select>
+
+    <select id="queryJudgementById" resultType="Judgement">
+        select * from T_judgement where id = #{id}
+    </select>
+
+    <select id="queryJudgementByExercise" resultType="Judgement">
+        select * from T_judgement where exerciseId = #{exercise} order by seq ASC
+    </select>
+
+    <select id="queryJudgementByExam" resultType="Judgement">
+        select * from T_judgement where examId = #{exam} order by seq ASC
+    </select>
+
+    <insert id="addJudgement" parameterType="Judgement">
+        insert into T_judgement (exerciseId,answer,question,seq,examId) values (#{exerciseId},#{answer},#{question},#{seq},#{examId})
+    </insert>
+
+    <update id="updateJudgement" parameterType="Judgement">
+        update T_judgement
+        <set>
+            <if test="answer != null">answer=#{answer},</if>
+            <if test="question != null">question=#{question},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="deleteJudgement" parameterType="int">
+        delete from T_judgement where id=#{id}
+    </delete>
+
+</mapper>

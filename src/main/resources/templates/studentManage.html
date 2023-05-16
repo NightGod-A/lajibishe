@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>学生管理页面</title>
+  <link th:href="@{css/output.css}" rel="stylesheet" type="text/css">
+</head>
+
+<body class="bg-gray-200">
+<input type="hidden" th:value="${classId}" id="classId">
+<header class="bg-white shadow-sm">
+  <div class="container mx-auto py-4 px-6 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-800">学生管理页面</h1>
+    <button onclick="jumpToTeacherByClass()"
+            class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none mr-2">
+      个人中心
+    </button>
+    <div class="flex items-center">
+      <input type="text" class="w-64 px-4 py-2 rounded-md mr-4 focus:outline-none" id="nameId"
+             placeholder="输入学生姓名或ID进行搜索">
+      <button onclick="searchUser()"
+              class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none mr-2">
+        搜索
+      </button>
+
+      <label for="importFile"
+             class="bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none cursor-pointer">
+        导入学生
+      </label>
+      <input type="file" id="importFile" class="hidden">
+
+    </div>
+  </div>
+</header>
+<main class="container mx-auto mt-8 px-4">
+  <section>
+    <h2 class="text-xl font-bold mb-4">搜索结果</h2>
+    <table class="w-full bg-white shadow-md divide-y divide-gray-300">
+      <thead>
+      <tr>
+        <th class="py-3 px-4 text-left">学生ID</th>
+        <th class="py-3 px-4 text-left">学生姓名</th>
+        <th class="py-3 px-4 text-left">学生电话</th>
+        <th class="py-3 px-4 text-center">操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="bg-white hover:bg-gray-100" th:each="searchUser:${searchUsers}">
+        <td class="py-3 px-4" th:text="${searchUser.getId()}"></td>
+        <td class="py-3 px-4" th:text="${searchUser.getName()}"></td>
+        <td class="py-3 px-4" th:text="${searchUser.getPhone()}"></td>
+        <td class="py-3 px-4 text-center">
+          <button th:if="${searchUser.getClassStatus() == 0}" th:data-id="${searchUser.getId()}" th:onclick="addSingleClassStudent(this.getAttribute('data-id'))"
+                  class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none">
+            加入课程
+          </button>
+          <button  th:data-id="${searchUser.getId()}" th:data-name="${searchUser.getName()}" th:data-phone="${searchUser.getPhone()}" th:data-password="${searchUser.getPassword()}"
+                   th:onclick="Revise(this.getAttribute('data-name'),this.getAttribute('data-id'),this.getAttribute('data-phone'),this.getAttribute('data-password'))"
+                   class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none mr-2">
+            修改
+          </button>
+          <button th:if="${searchUser.getClassStatus() == 1} " th:data-user="${searchUser.getId()}"  th:onclick="studentProgress(this.getAttribute('data-user'))"
+                  class="bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none mr-2">
+            进度信息
+          </button>
+          <button th:if="${searchUser.getClassStatus() == 1}"
+                  th:data-user="${searchUser.getId()}"  th:onclick="deleteStudent(this.getAttribute('data-user'))"
+                  class="bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none">
+            删除
+          </button>
+        </td>
+      </tr>
+      <!-- 可以根据搜索结果动态生成更多表格行 -->
+      </tbody>
+    </table>
+  </section>
+  <section class="mt-8">
+    <h2 class="text-xl font-bold mb-4">学生信息列表</h2>
+    <table class="w-full bg-white shadow-md divide-y divide-gray-300">
+      <thead>
+      <tr>
+        <th class="py-3 px-4 text-left">学生ID</th>
+        <th class="py-3 px-4 text-left">学生姓名</th>
+        <th class="py-3 px-4 text-left">学生电话</th>
+        <th class="py-3 px-4 text-center">操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="bg-white hover:bg-gray-100" th:each="user:${users}">
+        <td class="py-3 px-4" th:text="${user.getId()}"></td>
+        <td class="py-3 px-4" th:text="${user.getName()}"></td>
+        <td class="py-3 px-4" th:text="${user.getPhone()}"></td>
+        <td class="py-3 px-4 text-center">
+          <button th:data-user="${user.getId()}"  th:onclick="studentProgress(this.getAttribute('data-user'))"
+                  class="bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none mr-2">
+            进度信息
+          </button>
+          <button  th:data-id="${user.getId()}" th:data-name="${user.getName()}" th:data-phone="${user.getPhone()}" th:data-password="${user.getPassword()}"
+                   th:onclick="Revise(this.getAttribute('data-name'),this.getAttribute('data-id'),this.getAttribute('data-phone'),this.getAttribute('data-password'))"
+                  class="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none mr-2">
+            修改
+          </button>
+          <button th:data-user="${user.getId()}"  th:onclick="deleteStudent(this.getAttribute('data-user'))"
+                  class="bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none">
+            删除
+          </button>
+        </td>
+      </tr>
+      <!-- 可以根据学生信息列表动态生成更多表格行 -->
+      </tbody>
+    </table>
+  </section>
+</main>
+
+
+<div class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog"
+     aria-modal="true" id="revise-student-modal">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+    <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+         role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div
+                  class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+            <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+          </div>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3 class="text-lg leading-6 font-medium text-gray-900" id="revise-modal-headline">
+              修改学生信息
+            </h3>
+            <div class="mt-2">
+              <form>
+                <div>
+                  <label class="block text-gray-700 font-bold mb-2" for="revise-student-name">
+                    学生名称
+                  </label>
+                  <input
+                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          id="revise-student-name" name="revise-student-name" type="text" required
+                          placeholder="请输入考学生名称">
+                </div>
+                <div class="mt-4">
+                  <label class="block text-gray-700 font-bold mb-2" for="revise-student-phone">
+                    手机号
+                  </label>
+                  <input
+                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          id="revise-student-phone" name="revise-student-phone" type="text" required
+                          placeholder="请输入手机号">
+                </div>
+                <div class="mt-4">
+                  <label class="block text-gray-700 font-bold mb-2" for="revise-student-password">
+                    密码
+                  </label>
+                  <input
+                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          id="revise-student-password" name="revise-student-password" type="text" required
+                          placeholder="请输入密码">
+                </div>
+
+                <input type="hidden" id="manage-id">
+                <br />
+                <input type="button" value="Submit"
+                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                       onclick="submitRevise()"/>
+
+                <input type="button" value="Close"
+                       class="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                       onclick="closeRevise()"/>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script  type="text/javascript">
+
+
+
+
+    // 获取 file input 元素和上传按钮元素
+    var importFile = document.getElementById('importFile');
+    var classId = document.getElementById('classId').value;
+    // 为 file input 元素添加 change 事件监听器
+    importFile.addEventListener('change', function() {
+    var file = importFile.files[0];
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('classId',classId);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/addClassStudent');
+    xhr.send(formData);
+    xhr.onload = function() {
+    if (xhr.status === 200) {
+    alert('导入成功');
+    window.location.reload();
+  } else {
+    alert('导入失败');
+    window.location.reload();
+  }
+  };
+  });
+  function addSingleClassStudent(userId){
+    var formData = new FormData();
+    formData.append('classId',classId);
+    formData.append('userId',userId);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/addSingleClassStudent');
+    xhr.send(formData);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        alert('导入成功');
+        window.location.reload();
+      } else {
+        alert('导入失败');
+        window.location.reload();
+      }
+    };
+  }
+
+    function searchUser(){
+      var nameId = document.getElementById('nameId').value;
+      window.location.href ="/searchClassStudent?classId="+classId+"&nameId="+nameId;
+    }
+
+    function studentProgress(id){
+      window.location.href ="/studentProgress?userId="+id+"&classId="+classId;
+    }
+
+    function jumpToTeacherByClass(){
+      window.location.href ="/jumpToTeacherByClass?classId="+classId;
+    }
+
+
+    const content2 = document.getElementById('revise-student-modal');
+    function closeRevise() {
+
+      content2.classList.add('hidden');
+    }
+    function Revise(studentName,studentId,studentPhone,studentPassword) {
+      content2.classList.remove('hidden');
+      var name = document.getElementById("revise-student-name");
+      var phone = document.getElementById("revise-student-phone");
+      var password = document.getElementById("revise-student-password");
+      var id = document.getElementById("manage-id");
+      name.value = studentName;
+      id.value = studentId;
+      password.value = studentPassword;
+      phone.value = studentPhone;
+    }
+    function submitRevise(){
+      var name = document.getElementById("revise-student-name").value;
+      var phone = document.getElementById("revise-student-phone").value;
+      var password = document.getElementById("revise-student-password").value;
+      var id = document.getElementById("manage-id").value;
+      var jsonString = {
+        'studentId' :id,
+        'studentName' : name,
+        'studentPhone' : phone,
+        'studentPassword' : password
+      };
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/reviseStudent');
+      xhr.send(JSON.stringify(jsonString));
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          alert('修改成功');
+          window.location.reload();
+        } else {
+          alert('修改失败,手机号重复');
+        }
+      };
+    }
+
+    function deleteStudent(userId){
+      var formData = new FormData();
+      formData.append('classId',classId);
+      formData.append('userId',userId);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/deleteStudent');
+      xhr.send(formData);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          alert('删除成功');
+          window.location.reload();
+        } else {
+          alert('删除失败');
+          window.location.reload();
+        }
+      };
+    }
+</script>
+</body>
+</html>

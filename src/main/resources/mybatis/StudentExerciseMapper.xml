@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.StudentExerciseMapper">
+
+    <select id="queryStudentExerciseList" resultType="StudentExercise">
+        select * FROM T_studentExercise order by id
+    </select>
+
+    <select id="queryStudentExerciseList_COUNT" resultType="Long">
+        select count(*) FROM T_studentExercise
+    </select>
+
+    <select id="queryStudentExerciseById" resultType="StudentExercise">
+        select * from T_studentExercise where id = #{id}
+    </select>
+
+    <select id="queryStudentExerciseByStudentAndClass" resultType="StudentExercise">
+        select * from T_studentExercise where studentId = #{student} and classId = #{classId}
+    </select>
+
+    <select id="queryStudentExerciseByStudentAndClassAndExercise" resultType="StudentExercise">
+        select * from T_studentExercise where studentId = #{student} and classId = #{classId} and exerciseId = #{exerciseId}
+    </select>
+
+    <select id="queryStudentExerciseByExercise" resultType="StudentExercise">
+        select * from T_studentExercise where exerciseId = #{exerciseId}
+    </select>
+
+
+    <insert id="addStudentExercise" parameterType="StudentExercise">
+        insert into T_studentExercise (exerciseId,studentId,classId,status) values (#{exerciseId},#{studentId},#{classId},#{status})
+    </insert>
+
+    <update id="updateStudentExercise" parameterType="StudentExercise">
+        update T_studentExercise
+        <set>
+            <if test="exerciseId != null">exerciseId=#{exerciseId},</if>
+            <if test="studentId != null">studentId=#{studentId},</if>
+            <if test="classId != null">classId=#{classId},</if>
+            <if test="status != null">status=#{status},</if>
+            <if test="score != null">score=#{score},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+
+    <delete id="deleteStudentExercise" parameterType="int">
+        delete from T_studentExercise where id=#{id}
+    </delete>
+
+    <delete id="deleteStudentExerciseByClassAndExercise" parameterType="int">
+        delete from T_studentExercise where classId=#{classId} and exerciseId = #{exerciseId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ujn.studyweb.mapper.ClassVideoMapper">
+
+    <select id="queryClassVideoList" resultType="ClassVideo">
+        select * FROM T_classVideo order by id
+    </select>
+
+    <select id="queryClassVideoList_COUNT" resultType="Long">
+        select count(*) FROM T_classVideo
+    </select>
+
+    <select id="queryClassVideoById" resultType="ClassVideo">
+        select * from T_classVideo where id = #{id}
+    </select>
+
+    <select id="queryClassVideoListByClass" resultType="ClassVideo">
+        select * from T_classVideo where classId = #{classId}
+    </select>
+
+    <select id="queryClassVideoByClassAndVideo" resultType="ClassVideo">
+        select * from T_classVideo where classId = #{classId} and videoId = #{videoId}
+    </select>
+
+    <select id="queryClassVideoListByVideo" resultType="ClassVideo">
+        select * from T_classVideo where videoId = #{video}
+    </select>
+
+    <insert id="addClassVideo" parameterType="ClassVideo">
+        insert into T_classVideo (classId,videoId) values (#{classId},#{videoId})
+    </insert>
+
+    <update id="updateClassVideo" parameterType="ClassVideo">
+        update T_classVideo
+        <set>
+            <if test="classId != null">classId=#{classId},</if>
+            <if test="videoId != null">videoId=#{videoId},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="deleteClassVideo" parameterType="int">
+        delete from T_classVideo where id=#{id}
+    </delete>
+
+</mapper>
