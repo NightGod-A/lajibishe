@@ -234,7 +234,8 @@
     window.location.href ="/viewExamResult?user="+user+"&exam="+exam+"&classId="+classId;
   }
   function jumpToPPTView(pptId){
-    window.location.href ="/pptView?pptId="+pptId;
+    var id = btoa(pptId);
+    window.location.href ="/pptView?pptId="+id;
   }
   function canNot(){
     alert("超时无法查看或作答");

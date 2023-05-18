@@ -4,6 +4,17 @@ spring:
     url: jdbc:sqlserver://localhost:1433;databasename=ujnStudyWeb
     username: sa
     password: li888888
+  freemarker:
+    template-loader-path: classpath:/templates  # classpath:  一定不能漏写
+    cache: false
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    expose-request-attributes: false
+    expose-session-attributes: false
+    request-context-attribute: req
+    suffix: .ftl
+
 
   servlet:
     multipart:
@@ -13,3 +24,20 @@ spring:
 mybatis:
   type-aliases-package: com.ujn.studyweb.pojo
   mapper-locations: classpath:mybatis/*.xml
+
+#jodconverter:
+#  local:
+#    enabled: true
+#    office-home: D:\OpenOffice 4
+#    max-tasks-per-process: 10
+#    port-numbers: 8110
+
+accessFile:
+  resourceHandler: /ppt/** #匹配需要拦截的URL
+  location: F:/ujnProject/pptImage/  #本地文件夹
+
+
+
+
+
+

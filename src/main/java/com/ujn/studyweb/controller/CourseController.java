@@ -214,6 +214,7 @@ public class CourseController {
     public ResponseEntity showVideos(String fileName){
         try {
             // 由于是读取本机的文件，file是一定要加上的， path是在application配置文件中的路径
+            System.out.println("111");
             return ResponseEntity.ok(resourceLoader.getResource("file:" + "F:\\ujnProject\\video\\" + fileName));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();

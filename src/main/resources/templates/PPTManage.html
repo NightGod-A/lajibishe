@@ -224,7 +224,8 @@
     }
 
     function jumpToPPTView(pptId){
-        window.location.href ="/pptView?pptId="+pptId;
+        var id = btoa(pptId);
+        window.location.href ="/pptView?pptId="+id;
     }
 
     function jumpToPPTDistribute(pptId){

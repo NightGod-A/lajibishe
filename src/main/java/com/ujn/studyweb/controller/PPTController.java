@@ -5,7 +5,9 @@ import com.ujn.studyweb.service.IClassPPTService;
 import com.ujn.studyweb.service.IClassesService;
 import com.ujn.studyweb.service.ICourseService;
 import com.ujn.studyweb.service.IPPTService;
+import com.ujn.studyweb.utils.WebUtils;
 import org.apache.poi.xslf.usermodel.*;
+import org.jodconverter.core.office.OfficeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,67 +62,28 @@ public class PPTController {
             // 保存文件到磁盘
             String pptFileNameOrigin = file.getOriginalFilename();
             int index = pptFileNameOrigin.indexOf(".");
-            String pptFileName = UUID.randomUUID().toString()+pptFileNameOrigin.substring(index);
+            String uuid = UUID.randomUUID().toString();
+            String pptFileName = uuid+pptFileNameOrigin.substring(index);
             Path path = Paths.get("F:\\ujnProject\\ppt\\" + pptFileName);
             Files.write(path, file.getBytes());
-
-            FileInputStream in = new FileInputStream("F:\\ujnProject\\ppt\\" + pptFileName);
-            XMLSlideShow xmlSlideShow = new XMLSlideShow(in);
-            in.close();
-            // 获取大小
-            Dimension pgsize = xmlSlideShow.getPageSize();
-            // 获取幻灯片
-            List<XSLFSlide> slides = xmlSlideShow.getSlides();
-
             PPT ppt = new PPT();
             ppt.setPptName(pptName);
             ppt.setPpt(pptFileName);
             ppt.setCreatTime(new Date());
-            ppt.setPageNum(slides.size());
             ppt.setCourseId(Integer.parseInt(courseId));
             pptService.addPPT(ppt);
             int pptId = ppt.getId();
-
-            List<File> imageList = new ArrayList<>();
-            for (int i = 0; i < slides.size(); i++) {
-                // 解决乱码问题
-                List<XSLFShape> shapes = slides.get(i).getShapes();
-                for (XSLFShape shape : shapes) {
-                    if (shape instanceof XSLFTextShape) {
-                        XSLFTextShape sh = (XSLFTextShape) shape;
-                        List<XSLFTextParagraph> textParagraphs = sh.getTextParagraphs();
-                        for (XSLFTextParagraph xslfTextParagraph : textParagraphs) {
-                            List<XSLFTextRun> textRuns = xslfTextParagraph.getTextRuns();
-                            for (XSLFTextRun xslfTextRun : textRuns) {
-                                xslfTextRun.setFontFamily("宋体");
-                            }
-                        }
-                    }
-                }
-                //根据幻灯片大小生成图片
-                BufferedImage img = new BufferedImage(pgsize.width, pgsize.height, BufferedImage.TYPE_INT_RGB);
-                Graphics2D graphics = img.createGraphics();
-                graphics.setPaint(Color.white);
-                graphics.fill(new Rectangle2D.Float(0, 0, pgsize.width, pgsize.height));
-                // 将PPT内容绘制到img上
-                slides.get(i).draw(graphics);
-                //图片将要存放的路径
-                String absolutePath = "F:\\ujnProject\\pptImage\\" + pptId + "Slide" + (i + 1) + ".jpg";
-                File jpegFile = new File(absolutePath);
-                if (!jpegFile.exists()) {
-                    // 判断如果图片存在则不再重复创建，建议将图片存放到一个特定目录，后面会统一删除
-                    FileOutputStream fileOutputStream = new FileOutputStream(jpegFile);
-                    ImageIO.write(img, "jpg", fileOutputStream);
-                }
-                // 图片路径存放
-                imageList.add(jpegFile);
-            }
-
+            int size = pptService.generatePPT("F:\\ujnProject\\ppt\\" + pptFileName,"F:\\ujnProject\\ppt\\" + uuid + ".pdf",pptId);
+            PPT ppt1 = pptService.queryPPTById(pptId);
+            ppt1.setPageNum(size);
+            pptService.updatePPT(ppt1);
             return new ResponseEntity<>("文件上传成功", HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();
             // 返回上传失败的消息
             return new ResponseEntity<>("文件上传失败", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (OfficeException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -159,9 +122,17 @@ public class PPTController {
 
     @RequestMapping("/pptView")
     public String pptView(@RequestParam("pptId") String pptId,Model model){
-        PPT ppt = pptService.queryPPTById(Integer.parseInt(pptId));
-        model.addAttribute("ppt",ppt);
-        return "PPTView";
+        String realId =  WebUtils.decodeUrl(pptId);
+        PPT ppt = pptService.queryPPTById(Integer.parseInt(realId));
+        List<String> a = new ArrayList<>();
+        for (int i = 0; i < ppt.getPageNum(); i++){
+            a.add("http://localhost:8080/showPPT?fileName="+realId+"Slide"+i+".jpg");
+        }
+
+        model.addAttribute("imgurls",a);
+        model.addAttribute("currentUrl", a.get(0));
+        return "ppt";
+//        return "PPTView";
     }
 
     @RequestMapping("/jumpToPPTManage")
@@ -197,6 +168,19 @@ public class PPTController {
         ppt.setPptName(pptName);
         pptService.updatePPT(ppt);
         return new ResponseEntity<>("成功", HttpStatus.OK);
+    }
+
+    @RequestMapping("/ppt")
+    public String ppt(Model model,String url){
+        List<String> a = new ArrayList<>();
+        a.add("http://localhost:8080/showPPT?fileName=0.jpg");
+        a.add("http://localhost:8080/showPPT?fileName=1.jpg");
+        a.add("http://localhost:8080/showPPT?fileName=2.jpg");
+        a.add("http://localhost:8080/showPPT?fileName=3.jpg");
+        a.add("http://localhost:8080/showPPT?fileName=4.jpg");
+        model.addAttribute("imgurls",a);
+        model.addAttribute("currentUrl", a.get(0));
+        return "ppt";
     }
 
 

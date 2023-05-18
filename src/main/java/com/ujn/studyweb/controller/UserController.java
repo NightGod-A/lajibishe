@@ -6,6 +6,7 @@ import com.ujn.studyweb.service.IClassStudentService;
 import com.ujn.studyweb.service.IClassesService;
 import com.ujn.studyweb.service.ICourseService;
 import com.ujn.studyweb.service.IUserService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -77,15 +79,17 @@ public class UserController {
     }
 
     @RequestMapping("/loginCheck")
-    public String loginCheck(String phone,String password,String type,Model model){
+    public String loginCheck(String phone, String password, String type, Model model, HttpSession session){
         User user = userService.queryUserByPhone(phone);
         int userType;
         if (type.equals("student"))
             userType = 1;
         else
             userType = 0;
+        String password1 = DigestUtils.md5Hex(password);
         if (user != null){
-            if (password.equals(user.getPassword()) && userType == user.getType()){
+            if (password1.equals(user.getPassword()) && userType == user.getType()){
+                session.setAttribute("loginUser",phone);
                 if (userType == 0) {
                     model.addAttribute("user", user);
                     List<Course> courses = courseService.queryCourseByTeacher(user.getId());
@@ -121,6 +125,12 @@ public class UserController {
         return "login";
     }
 
+    @RequestMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "login";
+    }
+
     @RequestMapping("/reviseInformation")
     public ResponseEntity<String> reviseInformation(@RequestParam("username") String username,@RequestParam("phone") String phone,@RequestParam("userId") String userId){
         User user = userService.queryUserByPhone(phone);
@@ -137,10 +147,12 @@ public class UserController {
     @RequestMapping("/revisePassword")
     public ResponseEntity<String> revisePassword(@RequestParam("newPassword") String newPassword,@RequestParam("lastPassword") String lastPassword,@RequestParam("userId") String userId){
         User user1 = userService.queryUserById(Integer.parseInt(userId));
-        if (!user1.getPassword().equals(lastPassword)){
+        String password1 = DigestUtils.md5Hex(lastPassword);
+        if (!user1.getPassword().equals(password1)){
             return new ResponseEntity<>("文件上传失败", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        user1.setPassword(newPassword);
+        String password2 = DigestUtils.md5Hex(newPassword);
+        user1.setPassword(password2);
         userService.updateUser(user1);
         return new ResponseEntity<>("文件上传成功", HttpStatus.OK);
     }
@@ -152,8 +164,9 @@ public class UserController {
             model.addAttribute("msg","手机号已存在");
             return "register";
         }
+        String password1 = DigestUtils.md5Hex(password);
         User user1 = new User();
-        user1.setPassword(password);
+        user1.setPassword(password1);
         user1.setGender(1);
         user1.setName(name);
         user1.setPhone(phone);
