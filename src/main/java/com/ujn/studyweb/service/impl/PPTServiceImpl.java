@@ -118,7 +118,7 @@ public class PPTServiceImpl implements IPPTService {
 
     @Override
     public int generatePPT(String inputPath, String pdfPath, int id) throws OfficeException, IOException {
-        startOfficeManager();
+
         File inputFile = new File(inputPath);
         File pdfFile = new File(pdfPath);
         LocalConverter.Builder builder;
@@ -147,7 +147,6 @@ public class PPTServiceImpl implements IPPTService {
         if (doc != null) {   //关闭
             doc.close();
         }
-        killProcess();
         return pageCount;
     }
 

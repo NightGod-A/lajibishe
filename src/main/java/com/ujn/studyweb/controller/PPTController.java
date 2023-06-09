@@ -170,18 +170,7 @@ public class PPTController {
         return new ResponseEntity<>("成功", HttpStatus.OK);
     }
 
-    @RequestMapping("/ppt")
-    public String ppt(Model model,String url){
-        List<String> a = new ArrayList<>();
-        a.add("http://localhost:8080/showPPT?fileName=0.jpg");
-        a.add("http://localhost:8080/showPPT?fileName=1.jpg");
-        a.add("http://localhost:8080/showPPT?fileName=2.jpg");
-        a.add("http://localhost:8080/showPPT?fileName=3.jpg");
-        a.add("http://localhost:8080/showPPT?fileName=4.jpg");
-        model.addAttribute("imgurls",a);
-        model.addAttribute("currentUrl", a.get(0));
-        return "ppt";
-    }
+
 
 
 

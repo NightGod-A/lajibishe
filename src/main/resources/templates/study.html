@@ -128,7 +128,7 @@
 
               <p class="text-gray-600 text-sm mb-4" >
                 <span th:if="${studentExam.getStatus()} == 2">已完成</span>
-                <span th:if="${studentExam.getStatus()} == 1">答题肿</span>
+                <span th:if="${studentExam.getStatus()} == 1">答题中</span>
                 <span th:if="${studentExam.getStatus()} == -1">超时</span>
                 <span th:if="${studentExam.getStatus()} == 0">未完成</span>
               </p>
@@ -219,19 +219,19 @@
   }
 
   function viewExercise(user,exercise){
-    window.location.href ="/viewExercise?user="+user+"&exercise="+exercise+"&classId="+classId;
+    window.open("/viewExercise?user="+user+"&exercise="+exercise+"&classId="+classId);
   }
 
   function viewExerciseResult(user,exercise){
-    window.location.href ="/viewExerciseResult?user="+user+"&exercise="+exercise+"&classId="+classId;
+    window.open("/viewExerciseResult?user="+user+"&exercise="+exercise+"&classId="+classId);
   }
 
   function viewExam(user,exam){
-    window.location.href ="/viewExam?user="+user+"&exam="+exam+"&classId="+classId;
+    window.open("/viewExam?user="+user+"&exam="+exam+"&classId="+classId);
   }
 
   function viewExamResult(user,exam){
-    window.location.href ="/viewExamResult?user="+user+"&exam="+exam+"&classId="+classId;
+    window.open("/viewExamResult?user="+user+"&exam="+exam+"&classId="+classId);
   }
   function jumpToPPTView(pptId){
     var id = btoa(pptId);

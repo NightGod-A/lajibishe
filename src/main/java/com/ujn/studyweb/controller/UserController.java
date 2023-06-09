@@ -86,7 +86,8 @@ public class UserController {
             userType = 1;
         else
             userType = 0;
-        String password1 = DigestUtils.md5Hex(password);
+        String password1 = DigestUtils.md5Hex(password).toUpperCase();
+
         if (user != null){
             if (password1.equals(user.getPassword()) && userType == user.getType()){
                 session.setAttribute("loginUser",phone);
@@ -188,10 +189,11 @@ public class UserController {
         int studentId = jsonObject.getInteger("studentId");
         User user = userService.queryUserById(studentId);
         User user1 = userService.queryUserByPhone(studentPhone);
-        if (user1 != null){
+        if (user1 != null && user1.getId() != user.getId()){
             return new ResponseEntity<>("修改失败", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        user.setPassword(studentPassword);
+        String password1 = DigestUtils.md5Hex(studentPassword).toUpperCase();
+        user.setPassword(password1);
         user.setName(studentName);
         user.setPhone(studentPhone);
         userService.updateUser(user);

@@ -61,27 +61,27 @@
           <div class="flex justify-between items-center p-4">
             <div>
               <button th:data-id="${course.getId()}" th:onclick="jumpToPPTManage(this.getAttribute('data-id'))"
-                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">PPT Management</button>
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">PPT 管理</button>
               <button
                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                       th:data-name="${course.getName()}" th:data-description="${course.getDescription()}" th:data-radio="${course.getIsEnable()}" th:data-id="${course.getId()}"
-                      th:onclick="manageCourse(this.getAttribute('data-name'),this.getAttribute('data-description'),this.getAttribute('data-radio'),this.getAttribute('data-id'))" >Settings</button>
+                      th:onclick="manageCourse(this.getAttribute('data-name'),this.getAttribute('data-description'),this.getAttribute('data-radio'),this.getAttribute('data-id'))" >设置</button>
               <button
                       class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2"
-                      th:data-id="${course.getId()}" th:onclick="jumpToExerciseManage(this.getAttribute('data-id'))">Exercise
-                Management</button>
+                      th:data-id="${course.getId()}" th:onclick="jumpToExerciseManage(this.getAttribute('data-id'))">习题管理
+                </button>
               <button
                       class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2"
-                      th:data-id="${course.getId()}" th:onclick="jumpToExamManage(this.getAttribute('data-id'))">Exam
-                Management</button>
+                      th:data-id="${course.getId()}" th:onclick="jumpToExamManage(this.getAttribute('data-id'))">考试管理
+                </button>
               <button
                       class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2"
-                      th:data-id="${course.getId()}" th:onclick="jumpToClassManage(this.getAttribute('data-id'))">Class
-                Management</button>
+                      th:data-id="${course.getId()}" th:onclick="jumpToClassManage(this.getAttribute('data-id'))">班级管理
+                </button>
               <button
                       class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2"
-                      th:data-id="${course.getId()}" th:onclick="jumpToVideoManage(this.getAttribute('data-id'))">Video
-                Management</button>
+                      th:data-id="${course.getId()}" th:onclick="jumpToVideoManage(this.getAttribute('data-id'))">视频管理
+                </button>
               <button
                       class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2"
                       th:data-id="${course.getId()}" th:onclick="deleteCourse(this.getAttribute('data-id'))">删除</button>
@@ -224,11 +224,11 @@
                     </label>
                   </div>
                   <br />
-                  <input type="button" value="Submit"
+                  <input type="button" value="提交"
                           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                           onclick="submitFile()"/>
 
-                  <input type="button" value="Close"
+                  <input type="button" value="关闭"
                           class="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                           onclick="cancelCourse()"/>
                 </form>
@@ -302,11 +302,11 @@
                 </div>
                 <br />
                 <input type="hidden" id="manage-id">
-                <input type="button" value="Submit"
+                <input type="button" value="提交"
                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                        onclick="submitManageFile()"/>
 
-                <input type="button" value="Close"
+                <input type="button" value="关闭"
                        class="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                        onclick="cancelManageCourse()"/>
               </form>

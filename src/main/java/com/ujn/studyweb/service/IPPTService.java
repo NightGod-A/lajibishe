@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface IPPTService {
     int generatePPT(String inputPath,String pdfPath,int id) throws OfficeException, IOException;
+    void startOfficeManager() throws OfficeException;
     List<PPT> queryPPTList();
     PPT queryPPTById(int id);
     List<PPT> queryPPTByCourse(int course);

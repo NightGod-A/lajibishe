@@ -70,7 +70,7 @@
         xhr.onload = function() {
             if (xhr.status === 200) {
                 alert('习题提交成功');
-                window.location.href ="/viewCourse?student="+userId+"&course="+course+"&classId="+classId;
+                window.location.href ="/viewExamResult?user="+userId+"&exam="+examId+"&classId="+classId;
             } else {
                 alert('习题提交失败');
             }
@@ -116,7 +116,7 @@
                             <button
                                     type="submit"	class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                     onclick="submitExam()">
-                                Submit
+                                提交
                             </button>
                             </div>
                         </li>
@@ -189,7 +189,6 @@
 
     const timer = document.getElementById('timer');
     var minute = document.getElementById('minute').value;
-    alert(minute);
     let minutes = minute;
     let seconds = 0;
 

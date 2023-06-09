@@ -13,7 +13,7 @@
     <nav>
       <ul class="flex">
 
-        <li><a href="/logout" class="text-white py-2 px-4">Logout</a></li>
+        <li><a href="/logout" class="text-white py-2 px-4">退出</a></li>
       </ul>
     </nav>
   </div>
@@ -58,7 +58,7 @@
               <button
                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline"
                       th:data-id="${user.getId()}"  th:data-course="${class.getCourse().getId()}" th:data-class="${class.getId()}"
-                      th:onclick="viewCourse(this.getAttribute('data-id'),this.getAttribute('data-course'),this.getAttribute('data-class'))">View Course</button>
+                      th:onclick="viewCourse(this.getAttribute('data-id'),this.getAttribute('data-course'),this.getAttribute('data-class'))">查看课程</button>
             </div>
             <button
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline"
