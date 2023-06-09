@@ -214,7 +214,7 @@ public class ClassesController {
         }
         classesService.deleteClasses(Integer.parseInt(classId));
 
-        // 返回上传成功的消息
+
         return new ResponseEntity<>("文件上传成功", HttpStatus.OK);
     }
 
